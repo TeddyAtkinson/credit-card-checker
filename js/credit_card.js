@@ -1,6 +1,6 @@
 function isCardNumber(num) {
     const strNum = `${num}`;
-    const pattern = new RegExp("[0-9]{16}", "g");
+    const pattern = new RegExp("[0-9]{15,16}", "g");
     const card = strNum.replaceAll(" ", "").match(pattern) !== null ? strNum.replaceAll(" ", "").match(pattern)[0] : "0";
     return [card, pattern.test(strNum.replaceAll(" ", ""))];
 }
@@ -23,8 +23,29 @@ function validNumber(num) {
     twoNum.forEach(ind => {
         sum += parseInt(ind);
     });
-    return `${sum}`.endsWith("0");
+    return [`${sum}`.endsWith("0"), valid[0]];
 }
 
-console.log(validNumber("4102080860435620"));
-console.log(validNumber("4102080880435620"));
+function companyDetect(num) {
+    const valid = isCardNumber(num);
+
+    if (valid[0].charAt(0) === "4") {
+        return "This card is a Visa Card.";
+    }
+    else if (valid[0].charAt(0) === "5") {
+        return "This card is a Mastercard.";
+    }
+    else if (valid[0].charAt(0) === "6") {
+        return "This card is a Discover Card.";
+    }
+    else if (valid[0].charAt(0) === "3" && valid[0].charAt(1) === "4" || valid[0].charAt(0) === "3" && valid[0].charAt(1) === "7") {
+        return "This card is a American Express Card.";
+    }
+    else {
+        return null;
+    }
+}
+
+console.log(validNumber("4102080860435620")[0]);
+console.log(validNumber("4102080880435620")[0]);
+console.log(companyDetect("3502080860435620"));
